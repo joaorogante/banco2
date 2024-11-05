@@ -5,7 +5,7 @@ import java.util.Date;
 public class ExtratoModel {
     private String tipo;         
     private double quantidade;   
-    private double taxa;         // Taxa aplicada
+    private double taxa;         
     private double cambio;       // Câmbio usado
     private Date data;           // Data da transação
 
