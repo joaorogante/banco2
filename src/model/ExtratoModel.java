@@ -7,7 +7,7 @@ public class ExtratoModel {
     private double quantidade;   
     private double taxa;         
     private double cambio;       
-    private Date data;           // Data da transação
+    private Date data;           
 
     // Construtor
     public ExtratoModel(String tipo, double quantidade, double taxa, double cambio, Date data) {
