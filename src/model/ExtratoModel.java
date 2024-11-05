@@ -3,8 +3,8 @@ package model;
 import java.util.Date;
 
 public class ExtratoModel {
-    private String tipo;         // Tipo da transação: "depósito" ou "saque"
-    private double quantidade;   // Quantidade transacionada
+    private String tipo;         
+    private double quantidade;   
     private double taxa;         // Taxa aplicada
     private double cambio;       // Câmbio usado
     private Date data;           // Data da transação
