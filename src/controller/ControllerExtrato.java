@@ -11,6 +11,11 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ *
+ * @author João
+ */
+
 public class ControllerExtrato {
 
     private FrameExtrato je;
