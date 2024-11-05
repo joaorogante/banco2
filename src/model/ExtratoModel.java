@@ -6,7 +6,7 @@ public class ExtratoModel {
     private String tipo;         
     private double quantidade;   
     private double taxa;         
-    private double cambio;       // Câmbio usado
+    private double cambio;       
     private Date data;           // Data da transação
 
     // Construtor
