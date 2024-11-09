@@ -33,6 +33,8 @@ public class ControllerVender {
         this.jv = jv;
     }
     
+    
+    
      public boolean vender() {
         String senha = jv.getTxtsenhaVenda().getText();
         int opcao = Integer.parseInt(jv.getTxtOpcaoMoedaVenda().getText());
@@ -57,17 +59,17 @@ public class ControllerVender {
                 String moeda = "";
 
                 switch (opcao) {
-                    case 6:
+                    case 1:
                         taxaFixa = 0.02;  // 2%
                         taxaCotacao = 0.03; // 3%
                         moeda = "Bitcoin";
                         break;
-                    case 7:
+                    case 2:
                         taxaFixa = 0.01;  // 1%
                         taxaCotacao = 0.02; // 2%
                         moeda = "Ethereum";
                         break;
-                    case 8:
+                    case 3:
                         taxaFixa = 0.01;  // 1%
                         taxaCotacao = 0.01; // 1%
                         moeda = "Ripples";
@@ -134,6 +136,3 @@ public class ControllerVender {
     }
 }
         
-        
-    
-
