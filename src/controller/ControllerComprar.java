@@ -28,6 +28,9 @@ public class ControllerComprar{
         this.jc = jc;
     }
     
+  
+
+    
    //metodo
    public boolean comprar() {
         String senha = jc.getTxtsenhaCompra().getText();
@@ -83,13 +86,13 @@ public class ControllerComprar{
                 cliente.setReais(cliente.getReais() - valorTotal);
                 
                 switch (opcao) {
-                    case 1:
+                    case 7:
                         cliente.setBitcoin(cliente.getBitcoin() + valorCompra);
                         break;
-                    case 2:
+                    case 8:
                         cliente.setEthereum(cliente.getEthereum() + valorCompra);
                         break;
-                    case 3:
+                    case 9:
                         cliente.setRipple(cliente.getRipple() + valorCompra);
                         break;
                 }
@@ -125,5 +128,8 @@ public class ControllerComprar{
                  DecimalFormat df = new DecimalFormat("#0.00");
                  return df.format(numero);}
     }
+    
+
+
     
 
