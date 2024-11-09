@@ -8,131 +8,128 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import model.Usuario;
-import view.FrameVender;
+import view.FrameComprar;
 
 /**
  *
  * @author João
  */
 
-public class ControllerVender {
-    
-    private FrameVender jv;
+public class ControllerComprar{
+    private FrameComprar jc;
+   
     
     //construtores
 
-    public ControllerVender(FrameVender jv) {
-        this.jv = jv;
+    public ControllerComprar() {
     }
 
-    public FrameVender getJv() {
-        return jv;
-    }
-
-    public void setJv(FrameVender jv) {
-        this.jv = jv;
+    public ControllerComprar(FrameComprar jc) {
+        this.jc = jc;
     }
     
-    
-    
-     public boolean vender() {
-        String senha = jv.getTxtsenhaVenda().getText();
-        int opcao = Integer.parseInt(jv.getTxtOpcaoMoedaVenda().getText());
-        double valorVenda = Double.parseDouble(jv.getTxtValorVenda().getText());
+  
 
+    
+   //metodo
+   public boolean comprar() {
+        String senha = jc.getTxtsenhaCompra().getText();
+        int opcao = Integer.parseInt(jc.getTxtOpcaoMoedaCompra().getText());
+        double valorCompra = Double.parseDouble(jc.getTxtValorCompra().getText());
+        
         if (senha.length() < 6) {
-            JOptionPane.showMessageDialog(jv, "A senha deve ter 6 dígitos", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jc, "A senha deve ter 6 dígitos", "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         Usuario cliente = new Usuario();
         cliente.setSenha(senha);
-
+        
         Conexao conexao = new Conexao();
         try (Connection conn = conexao.getConnection()) {
             CadastroDAO dao = new CadastroDAO(conn);
             if (dao.verificarCliente(cliente)) {
-                JOptionPane.showMessageDialog(jv, "Cliente identificado!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-
+                JOptionPane.showMessageDialog(jc, "Cliente identificado!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                
                 double taxaFixa = 0.0;
                 double taxaCotacao = 0.0;
                 String moeda = "";
-
+                
                 switch (opcao) {
-                    case 1:
+                    case 7:
                         taxaFixa = 0.02;  // 2%
-                        taxaCotacao = 0.03; // 3%
+                        taxaCotacao = 1.75; //taxa da cotação
                         moeda = "Bitcoin";
                         break;
-                    case 2:
+                    case 8:
                         taxaFixa = 0.01;  // 1%
-                        taxaCotacao = 0.02; // 2%
+                        taxaCotacao = 1.02; //taxa da cotação
                         moeda = "Ethereum";
                         break;
-                    case 3:
+                    case 9:
                         taxaFixa = 0.01;  // 1%
-                        taxaCotacao = 0.01; // 1%
+                        taxaCotacao = 0.7; //taxa da cotação
                         moeda = "Ripples";
                         break;
                     default:
-                        JOptionPane.showMessageDialog(jv, "Opção inválida", "Erro", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(jc, "Opção inválida", "Erro", JOptionPane.ERROR_MESSAGE);
                         return false;
                 }
+                
+                double valorTotal = valorCompra * (1 + taxaFixa + taxaCotacao);
+                
+                if (cliente.getReais() < valorTotal) {
+                    JOptionPane.showMessageDialog(jc, "Saldo insuficiente", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
 
-                double valorTotal = valorVenda * (1 - (taxaFixa + taxaCotacao));
-
+                cliente.setReais(cliente.getReais() - valorTotal);
+                
                 switch (opcao) {
-                    case 1:
-                        if (cliente.getBitcoin() < valorVenda) {
-                            JOptionPane.showMessageDialog(jv, "Saldo insuficiente de Bitcoin", "Erro", JOptionPane.ERROR_MESSAGE);
-                            return false;
-                        }
-                        cliente.setBitcoin(cliente.getBitcoin() - valorVenda);
+                    case 7:
+                        cliente.setBitcoin(cliente.getBitcoin() + valorCompra);
                         break;
-                    case 2:
-                        if (cliente.getEthereum() < valorVenda) {
-                            JOptionPane.showMessageDialog(jv, "Saldo insuficiente de Ethereum", "Erro", JOptionPane.ERROR_MESSAGE);
-                            return false;
-                        }
-                        cliente.setEthereum(cliente.getEthereum() - valorVenda);
+                    case 8:
+                        cliente.setEthereum(cliente.getEthereum() + valorCompra);
                         break;
-                    case 3:
-                        if (cliente.getRipple() < valorVenda) {
-                            JOptionPane.showMessageDialog(jv, "Saldo insuficiente de Ripple", "Erro", JOptionPane.ERROR_MESSAGE);
-                            return false;
-                        }
-                        cliente.setRipple(cliente.getRipple() - valorVenda);
+                    case 9:
+                        cliente.setRipple(cliente.getRipple() + valorCompra);
                         break;
                 }
 
-                cliente.setReais(cliente.getReais() + valorTotal);
                 dao.atualizarSaldos(cliente);
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("Nome: ").append(cliente.getNome()).append("\n");
                 sb.append("CPF: ").append(cliente.getCpf()).append("\n");
-                sb.append("Saldo atual Reais: ").append(formatarDecimal(cliente.getReais())).append("\n");
-                sb.append("Saldo atual Bitcoin: ").append(formatarDecimal(cliente.getBitcoin())).append("\n");
-                sb.append("Saldo atual Ethereum: ").append(formatarDecimal(cliente.getEthereum())).append("\n");
-                sb.append("Saldo atual Ripples: ").append(formatarDecimal(cliente.getRipple())).append("\n");
+                sb.append("Saldo atual Reais: ").append(cliente.getReais()).append("\n");
+                sb.append("Saldo atual Bitcoin: ").append(cliente.getBitcoin()).append("\n");
+                sb.append("Saldo atual Ethereum: ").append(cliente.getEthereum()).append("\n");
+                sb.append("Saldo atual Ripples: ").append(cliente.getRipple()).append("\n");
 
-                jv.getTxtAreaCotacaoVenda().setText(sb.toString());
+                jc.getTxtAreaCotacaoCompra().setText(sb.toString());
                 return true;
-
+             
+               
+                
             } else {
-                JOptionPane.showMessageDialog(jv, "Usuário não identificado", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(jc, "Usuário não identificado", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 return false;
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(jv, "Falha na conexão!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jc, "Falha na conexão!", "Erro", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
             return false;
         }
     }
-
+       
+       
     private String formatarDecimal(double numero) {
-        DecimalFormat df = new DecimalFormat("#0.00");
-        return df.format(numero);
+                 DecimalFormat df = new DecimalFormat("#0.00");
+                 return df.format(numero);}
     }
-}
-        
+    
+
+
+    
+
